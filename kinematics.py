@@ -1,12 +1,22 @@
 import serial
 import math
 
-theta0 = 75
-theta1 = -8
-theta2 = -15
+theta0 = 33
+theta1 = 66
+theta2 = -45
 theta0Rad = math.radians(theta0)
 theta1Rad = math.radians(theta1)
 theta2Rad = math.radians(theta2)
+
+def checkThetas():
+    global theta0, theta1, theta2
+    if(theta0 < -47 or theta0 > 91):
+        return 0
+    if(theta1 < -8 or theta1 > 136):
+        return 0
+    if(theta2 < -79 or theta2 > 60):
+        return 0
+    return 1
 
 # KINEMATICS SETUP
 
@@ -37,9 +47,12 @@ print("Going to Location: {x:3.1f}, {y:3.1f}, {z:3.1f}".format(**locals()))
 print("Angles: {theta0:3.1f}, {theta1:3.1f}, {theta2:3.1f}".format(**locals()))
 print("Pulses: {p0:4.0f}, {p1:4.0f}, {p2:4.0f}".format(**locals()))
 
-servoCommand = "#0P" + str(p0) + " #1P" + str(p1) + " #2P" + str(p2) + "\r"
-ser = serial.Serial('COM7', 9600, timeout=5)
-ser.write(servoCommand.encode('utf-8'))
+if(checkThetas()):
+    servoCommand = "#0P" + str(p0) + " #1P" + str(p1) + " #2P" + str(p2) + "\r"
+    ser = serial.Serial('COM7', 9600, timeout=5)
+    ser.write(servoCommand.encode('utf-8'))
+else:
+    print("Theta values out of range")
 
 #ser.write(b'#2P2200\r')
 #ser.write(b'#1P920\r')
